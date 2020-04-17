@@ -87,3 +87,19 @@ if(NOT catch2_POPULATED)
 endif()
 
 # Add more CMake libraries here ...
+FetchContent_Declare(
+        numcpp
+        GIT_REPOSITORY https://github.com/dpilger26/NumCpp
+)
+
+FetchContent_GetProperties(numcpp)
+if(NOT numcpp_POPULATED)
+    FetchContent_Populate(numcpp)
+    # This is overkill since we only need a single file. Though it is a clean solution.
+    add_library(numcpp INTERFACE)
+    target_include_directories(numcpp INTERFACE ${numcpp_SOURCE_DIR}/include)
+endif()
+
+target_include_directories(numcpp INTERFACE C:/Users/jiany/Downloads/boost_1_70_0/boost_1_70_0)
+add_executable(run1 apps/run.cc)
+target_link_libraries(run1 ${numcpp_LIBARARIES})
