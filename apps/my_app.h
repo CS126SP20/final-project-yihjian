@@ -33,10 +33,16 @@ namespace myapp {
 
         void PrintMatrix();
 
+        void Rref();
+        void LUDecomp();
+        void Diag();
+        void Eigen();
+        void SVD();
+
         string instructions;
         Font font;
         string matrix;
-        pramas buttons;
+        params::InterfaceGlRef buttons;
     };
 
 }  // namespace myapp

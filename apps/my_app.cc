@@ -28,10 +28,15 @@ namespace myapp {
                        "4,5,6";
         font = Font("Times New Roman", 32);
 
-        // Printout welcome message/instructions
-        PrintInstruction();
-
-        PrintMatrix();
+        buttons = params::InterfaceGl::create(getWindow(), "Operations", ivec2(200, 430));
+        buttons->addButton("rref", bind(&MyApp::Rref, this));
+        buttons->addButton("LU-Decomp", bind(&MyApp::LUDecomp, this));
+        buttons->addButton("Diag", bind(&MyApp::Diag, this));
+        buttons->addButton("Eigen", bind(&MyApp::Eigen, this));
+        buttons->addButton("SVD", bind(&MyApp::SVD, this));
+        buttons->setPosition(vec2(380,0));
+        // Printout welcome message/instructions/input box
+        draw();
     }
 
     void MyApp::update() {
@@ -39,6 +44,10 @@ namespace myapp {
     }
 
     void MyApp::draw() {
+        //Rerender screen so we don't get layer over layer.
+        gl::clear(Color(0.83f, 0.83f, 0.83f));
+        PrintInstruction();
+        buttons->draw();
         PrintMatrix();
     }
 
@@ -57,15 +66,14 @@ namespace myapp {
             matrix += str;
         }
 
-        PrintMatrix();
+        draw();
     }
 
     void MyApp::PrintInstruction() {
-
         TextBox textbox = TextBox()
                 .alignment(TextBox::CENTER)
                 .font(font)
-                .size(vec2(500,100))
+                .size(vec2(400,100))
                 .text(instructions)
                 .color(Color(0, 0, 0));
 
@@ -75,10 +83,6 @@ namespace myapp {
     }
 
     void MyApp::PrintMatrix() {
-        //Rerender screen so we don't get layer over layer.
-        gl::clear(Color(0.83f, 0.83f, 0.83f));
-        PrintInstruction();
-
         TextBox textbox = TextBox()
                 .alignment(TextBox::LEFT)
                 .font(font)
@@ -86,12 +90,18 @@ namespace myapp {
                 .text(matrix)
                 .color(Color(0, 0, 0));
 
-        vec2 loc = {100, 130};
+        vec2 loc = {50, 130};
         auto welcome_texture = gl::Texture::create(textbox.render());
         gl::draw(welcome_texture, loc);
 
         // Set color to black and draw border to our textbox
         gl::color(Color(0,0,0));
-        gl::drawStrokedRect(Rectf(100,130,400,430), 5.0);
+        gl::drawStrokedRect(Rectf(50,130,350,430), 5.0);
     }
+
+    void MyApp::Rref(){};
+    void MyApp::LUDecomp(){};
+    void MyApp::Diag(){};
+    void MyApp::Eigen(){};
+    void MyApp::SVD(){};
 }  // namespace myapp
