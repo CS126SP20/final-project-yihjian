@@ -2,6 +2,7 @@
 
 #include "my_app.h"
 #include <NumCpp.hpp>
+#include <mylibrary/matrixsolver.h>
 
 using namespace ci;
 using namespace ci::app;
@@ -34,13 +35,13 @@ namespace myapp {
         buttons->addButton("Diag", bind(&MyApp::Diag, this));
         buttons->addButton("Eigen", bind(&MyApp::Eigen, this));
         buttons->addButton("SVD", bind(&MyApp::SVD, this));
-        buttons->setPosition(vec2(380,0));
+        buttons->setPosition(vec2(380, 0));
         // Printout welcome message/instructions/input box
         draw();
     }
 
     void MyApp::update() {
-        PrintMatrix();
+        draw();
     }
 
     void MyApp::draw() {
@@ -49,6 +50,7 @@ namespace myapp {
         PrintInstruction();
         buttons->draw();
         PrintMatrix();
+        PrintResult();
     }
 
     void MyApp::keyDown(KeyEvent event) {
@@ -73,7 +75,7 @@ namespace myapp {
         TextBox textbox = TextBox()
                 .alignment(TextBox::CENTER)
                 .font(font)
-                .size(vec2(400,100))
+                .size(vec2(400, 100))
                 .text(instructions)
                 .color(Color(0, 0, 0));
 
@@ -86,22 +88,52 @@ namespace myapp {
         TextBox textbox = TextBox()
                 .alignment(TextBox::LEFT)
                 .font(font)
-                .size(vec2(300,300))
+                .size(vec2(300, 300))
                 .text(matrix)
                 .color(Color(0, 0, 0));
 
         vec2 loc = {50, 130};
-        auto welcome_texture = gl::Texture::create(textbox.render());
-        gl::draw(welcome_texture, loc);
+        auto input_matrix = gl::Texture::create(textbox.render());
+        gl::draw(input_matrix, loc);
 
         // Set color to black and draw border to our textbox
-        gl::color(Color(0,0,0));
-        gl::drawStrokedRect(Rectf(50,130,350,430), 5.0);
+        gl::color(Color(0, 0, 0));
+        gl::drawStrokedRect(Rectf(50, 130, 350, 430), 5.0);
     }
 
-    void MyApp::Rref(){};
-    void MyApp::LUDecomp(){};
-    void MyApp::Diag(){};
-    void MyApp::Eigen(){};
-    void MyApp::SVD(){};
+    void MyApp::PrintResult() {
+        TextBox textbox = TextBox()
+                .alignment(TextBox::LEFT)
+                .font(font)
+                .size(vec2(500, 500))
+                .text("Result:\n" + solved_mat)
+                .color(Color(0, 0, 0));
+
+        vec2 loc = {50, 460};
+        auto result_matrices = gl::Texture::create(textbox.render());
+        gl::draw(result_matrices, loc);
+
+        gl::color(Color(0, 0, 0));
+        gl::drawStrokedRect(Rectf(50, 460, 550, 960), 5.0);
+    }
+
+    void MyApp::Rref() {
+        solved_mat = matrixsolver::Rref(matrix);
+    }
+
+    void MyApp::LUDecomp() {
+        solved_mat = matrixsolver::LUDecomp(matrix);
+    }
+
+    void MyApp::Diag() {
+        solved_mat = matrixsolver::Diag(matrix);
+    }
+
+    void MyApp::Eigen() {
+        solved_mat = matrixsolver::Eigen(matrix);
+    }
+
+    void MyApp::SVD() {
+        solved_mat = matrixsolver::SVD(matrix);
+    }
 }  // namespace myapp

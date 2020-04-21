@@ -30,8 +30,8 @@ namespace myapp {
         void draw() override;
 
         void PrintInstruction();
-
         void PrintMatrix();
+        void PrintResult();
 
         void Rref();
         void LUDecomp();
@@ -43,6 +43,7 @@ namespace myapp {
         Font font;
         string matrix;
         params::InterfaceGlRef buttons;
+        string solved_mat;
     };
 
 }  // namespace myapp
