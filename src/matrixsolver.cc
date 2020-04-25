@@ -41,19 +41,103 @@ namespace matrixsolver {
         return oss.str();
     }
 
-    //!TODO: Rewrite Rref, library way doesn't work properly.
     string Rref(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
-            mat = StringToMat(input);
+            mat = StringToMat(input).astype<double>();
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
         }
-        auto plu_res = linalg::pivotLU_decomposition(mat);
-        string res = MatToString(get<1>(plu_res));
-        return res;
+
+        // Convert NdArray to 2DVec to calculate rref
+        size_t row = mat.shape().rows;
+        vector<vector<double>> matrix(row);
+        for (int i = 0; i < row; i++)
+            matrix[i] = mat.row(i).toStlVector();
+
+        size_t rank = RrefHelper(matrix);
+        // Strech out 2dvec
+        string out;
+        for (const auto& r:matrix) {
+            out += "[";
+            for(const auto& c:r) {
+                out += to_string(c);
+                out += ", ";
+            }
+            out += "]\n";
+        }
+        return "Rank is " + to_string(rank)
+               + "\nReduced Row Echelon Form is\n" + out;
     }
+
+    // Took this from https://github.com/yicheng-w/acm-icpc-notebook/blob/master/general-algorithm/rref.cpp
+    // Should have don't it using cn::NdArray, but I could not update mat in
+    // that form.
+    int RrefHelper(vector<vector<double>>& mat) {
+        int num_row = mat.size();
+        int num_col = mat[0].size();
+        int row = 0;
+        for (int col = 0; col < num_col && row < num_row; col++) {
+            // Find pivot rows, checking if next n-rows are greater than current
+            // row on leading index
+            int j = row;
+            for (int i = row + 1; i < num_row; i++) {
+                if (fabs(mat[i][col]) > fabs(mat[j][col]))
+                    j = i;
+            }
+            if (fabs(mat[j][col]) < 1e-10)
+                continue;
+            swap(mat[j], mat[row]);
+
+            // Normalize each row based with 1
+            // subtract previous row.
+            double s = 1.0 / mat[row][col];
+            for (int j1 = 0; j1 < num_col; j1++) mat[row][j1] *= s;
+            for (int i = 0; i < num_row; i++)
+                if (i != row) {
+                    double t = mat[i][col];
+                    for (int j2 = 0; j2 < num_col; j2++) {
+                        mat[i][j2] -= t * mat[row][j2];
+                    }
+                }
+            row++;
+        }
+        return row;
+    }
+
+//    int RrefHelper(NdArray<double>& mat) {
+//        int num_row = mat.shape().rows;
+//        int num_col = mat.shape().cols;
+//        int row = 0;
+//        for (int col = 0; col < num_col && row < num_row; col++) {
+//            int j = row;
+//            for (int i = row + 1; i < num_row; i++) {
+//                if (fabs(mat(i, col)) > fabs(mat(j, col)))
+//                    j = i;
+//            }
+//
+//            if (fabs(mat(j, col)) < 1e-10)
+//                continue;
+//
+//            auto tmp = mat.row(j);
+//            mat.row(j) = mat.row(row);
+//            mat.row(row) = tmp;
+//            cout<<mat<<endl;
+//
+//            double norm_factor = 1.0 / mat(row, col);
+//            mat.row(row) * norm_factor;
+//            cout<<mat<<endl;
+//            for (int i = 0; i < num_row; i++)
+//                if (i != row) {
+//                    double col_factor = mat(i, col);
+//                    mat.row(i) - col_factor * mat(row, j);
+//                }
+//            cout<<mat<<endl;
+//            row++;
+//        }
+//        return row;
+//    }
 
     string LUDecomp(const string& input) {
         NdArray<float> mat;
@@ -86,7 +170,7 @@ namespace matrixsolver {
         }
 
         try {
-            return "Determinant is" + to_string(linalg::det(mat));
+            return "Determinant is " + to_string(linalg::det(mat));
         } catch (exception e) {
             return e.what();
         }
@@ -118,7 +202,7 @@ namespace matrixsolver {
 
         return "U is:\n" + MatToString(u)
                + "S is\n" + MatToString(s)
-               + "V-Transpose is" + MatToString(vt);
+               + "V-Transpose is\n" + MatToString(vt);
     }
 
     string Inv(const string& input) {
@@ -131,7 +215,7 @@ namespace matrixsolver {
         }
 
         try {
-            return "Inverse is" + MatToString(linalg::inv(mat));
+            return "Inverse is\n" + MatToString(linalg::inv(mat));
         } catch (exception e) {
             return e.what();
         }

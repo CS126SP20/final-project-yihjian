@@ -14,6 +14,10 @@ namespace matrixsolver {
 
     string Rref(const string& input);
 
+    int RrefHelper(vector<vector<double>>& mat);
+
+    //int RrefHelper(NdArray<double>& mat);
+
     string LUDecomp(const string& input);
 
     string Det(const string& input);

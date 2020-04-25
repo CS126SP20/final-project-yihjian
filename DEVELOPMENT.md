@@ -14,7 +14,7 @@
  - Update front end display of results.
  
 -**4/24/20** Finish LU-decomp
- - Need to do Rref
+ - ~~Need to do Rref~~ -> Could improve runtime/memory
  
 -**4/25/20** Some more progress with backend
  - Finish SVD/Det
