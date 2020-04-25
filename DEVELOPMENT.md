@@ -12,3 +12,13 @@
 
 -**4/20/20** Setup backend apis
  - Update front end display of results.
+ 
+-**4/24/20** Finish LU-decomp
+ - Need to do Rref
+ 
+-**4/25/20** Some more progress with backend
+ - Finish SVD/Det
+ - Change eigen to inverse
+ - No native support for eigenvalue/vectors
+    - probably do a power iteration
+ - Need to do Diagonalization(But this needs eigen)

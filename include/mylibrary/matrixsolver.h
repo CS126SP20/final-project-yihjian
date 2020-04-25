@@ -8,19 +8,21 @@
 using namespace std;
 using namespace nc;
 namespace matrixsolver {
-    NdArray<float> StringToMat(string input);
+    NdArray<float> StringToMat(const string& input);
 
-    string MatToString(NdArray<float> mat);
+    string MatToString(const NdArray<double>& mat);
 
-    string Rref(string input);
+    string Rref(const string& input);
 
-    string LUDecomp(string input);
+    string LUDecomp(const string& input);
 
-    string Diag(string input);
+    string Det(const string& input);
 
     string Eigen(string input);
 
-    string SVD(string input);
+    string SVD(const string& input);
+
+    string Inv(const string& input);
 }  // namespace matrixsolver
 
 
