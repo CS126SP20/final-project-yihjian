@@ -32,8 +32,8 @@ namespace myapp {
         buttons = params::InterfaceGl::create(getWindow(), "Operations", ivec2(200, 430));
         buttons->addButton("rref", bind(&MyApp::Rref, this));
         buttons->addButton("LU-Decomp", bind(&MyApp::LUDecomp, this));
-        buttons->addButton("Diag", bind(&MyApp::Diag, this));
-        buttons->addButton("Eigen", bind(&MyApp::Eigen, this));
+        buttons->addButton("Det", bind(&MyApp::Det, this));
+        buttons->addButton("Inverse", bind(&MyApp::Inv, this));
         buttons->addButton("SVD", bind(&MyApp::SVD, this));
         buttons->setPosition(vec2(380, 0));
         // Printout welcome message/instructions/input box
@@ -87,7 +87,7 @@ namespace myapp {
     void MyApp::PrintMatrix() {
         TextBox textbox = TextBox()
                 .alignment(TextBox::LEFT)
-                .font(font)
+                .font(Font("Times New Roman", 24))
                 .size(vec2(300, 300))
                 .text(matrix)
                 .color(Color(0, 0, 0));
@@ -104,7 +104,7 @@ namespace myapp {
     void MyApp::PrintResult() {
         TextBox textbox = TextBox()
                 .alignment(TextBox::LEFT)
-                .font(font)
+                .font(Font("Times New Roman", 24))
                 .size(vec2(500, 500))
                 .text("Result:\n" + solved_mat)
                 .color(Color(0, 0, 0));
@@ -125,12 +125,12 @@ namespace myapp {
         solved_mat = matrixsolver::LUDecomp(matrix);
     }
 
-    void MyApp::Diag() {
-        solved_mat = matrixsolver::Diag(matrix);
+    void MyApp::Det() {
+        solved_mat = matrixsolver::Det(matrix);
     }
 
-    void MyApp::Eigen() {
-        solved_mat = matrixsolver::Eigen(matrix);
+    void MyApp::Inv() {
+        solved_mat = matrixsolver::Inv(matrix);
     }
 
     void MyApp::SVD() {

@@ -35,8 +35,8 @@ namespace myapp {
 
         void Rref();
         void LUDecomp();
-        void Diag();
-        void Eigen();
+        void Det();
+        void Inv();
         void SVD();
 
         string instructions;
