@@ -28,13 +28,31 @@ namespace myapp {
                        "1,2,3\n"
                        "4,5,6";
         font = Font("Times New Roman", 32);
+        matrix = "";
 
         buttons = params::InterfaceGl::create(getWindow(), "Operations", ivec2(200, 430));
-        buttons->addButton("rref", bind(&MyApp::Rref, this));
-        buttons->addButton("LU-Decomp", bind(&MyApp::LUDecomp, this));
         buttons->addButton("Det", bind(&MyApp::Det, this));
+        buttons->addButton("Eigen(in development)", bind(&MyApp::Eigen, this));
         buttons->addButton("Inverse", bind(&MyApp::Inv, this));
+        buttons->addButton("LU-Decomp", bind(&MyApp::LUDecomp, this));
+        buttons->addButton("rref", bind(&MyApp::Rref, this));
         buttons->addButton("SVD", bind(&MyApp::SVD, this));
+
+        gl::color(1,1,1);
+        buttons->addSeparator();
+        buttons->addText("Input params as");
+        buttons->addText("\"1.0, 2, 3.33\"");
+        buttons->addSeparator();
+        buttons->addText("Power Iterations");
+        buttons->addParam("Inital Guess", &initial_guess);
+        buttons->addButton("Do 1 Iteration", bind(&MyApp::PowerIteration, this));
+        buttons->addSeparator();
+
+        buttons->addText("Least Square");
+        buttons->addParam("b", &b);
+        buttons->addButton("solve", bind(&MyApp::LstSq, this));
+        buttons->addSeparator();
+
         buttons->setPosition(vec2(380, 0));
         // Printout welcome message/instructions/input box
         draw();
@@ -117,6 +135,7 @@ namespace myapp {
         gl::drawStrokedRect(Rectf(50, 460, 550, 960), 5.0);
     }
 
+    // Following are button handlers
     void MyApp::Rref() {
         solved_mat = matrixsolver::Rref(matrix);
     }
@@ -135,5 +154,17 @@ namespace myapp {
 
     void MyApp::SVD() {
         solved_mat = matrixsolver::SVD(matrix);
+    }
+
+    void MyApp::Eigen() {
+        solved_mat = matrixsolver::Eigen(matrix);
+    }
+
+    void MyApp::PowerIteration() {
+        solved_mat = matrixsolver::PowerIter(matrix, initial_guess);
+    }
+
+    void MyApp::LstSq() {
+        solved_mat = "lstsq";
     }
 }  // namespace myapp

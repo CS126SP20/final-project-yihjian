@@ -38,12 +38,17 @@ namespace myapp {
         void Det();
         void Inv();
         void SVD();
+        void Eigen();
+        void PowerIteration();
+        void LstSq();
 
         string instructions;
         Font font;
         string matrix;
         params::InterfaceGlRef buttons;
         string solved_mat;
+        string initial_guess;
+        string b;
     };
 
 }  // namespace myapp
