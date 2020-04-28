@@ -161,7 +161,9 @@ namespace myapp {
     }
 
     void MyApp::PowerIteration() {
-        solved_mat = matrixsolver::PowerIter(matrix, initial_guess);
+        auto res = matrixsolver::PowerIter(matrix, initial_guess);
+        solved_mat = std::get<0>(res);
+        initial_guess = std::get<1>(res);
     }
 
     void MyApp::LstSq() {

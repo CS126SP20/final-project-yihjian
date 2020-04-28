@@ -71,4 +71,13 @@ namespace util {
 
         return NdArray<float>{mat}.reshape(row_count,1);
     }
+
+    string VecToLine(const NdArray<double>& vec) {
+        string out;
+        for(auto& value:vec) {
+            out += to_string(value);
+            out += ",";
+        }
+        return out;
+    }
 }

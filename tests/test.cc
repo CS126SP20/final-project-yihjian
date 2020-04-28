@@ -6,7 +6,7 @@
 #include <cinder/Rand.h>
 
 #include <mylibrary/matrixsolver.h>
-#include "util.h"
+#include <mylibrary/util.h>
 
 
 TEST_CASE("Random sanity test", "[random]") {
@@ -17,13 +17,13 @@ TEST_CASE("Random sanity test", "[random]") {
 
 TEST_CASE("Test matrix solver") {
     string input = "1.13, 123.2130, 213\n14351.14321,12837.970,219830.9\n21,213,219";
-    auto mat = matrixsolver::StringToMat(input);
+    auto mat = util::StringToMat(input);
     REQUIRE(mat(1, 1) == 12837.97f);
     REQUIRE(mat(1, 0) == 14351.14321f);
     REQUIRE(mat(2, 1) == 213.0f);
 
     string input1 = "1.13, 123.2130, 213\n14351.14321,12837.970,219830.9\n21,213,";
-    REQUIRE_THROWS(matrixsolver::StringToMat(input1));
+    REQUIRE_THROWS(util::StringToMat(input1));
 }
 
 TEST_CASE("rref") {
@@ -39,5 +39,7 @@ TEST_CASE("rref") {
         a[i] = vector<double>(A[i], A[i] + 4);
     int rank = matrixsolver::RrefHelper(a);
     REQUIRE(rank == 3);
+    cout<<util::StringToVec("-3, 4").norm()(0,0)<<endl;
+    cout<<util::StringToVec("-3,4") / 5.0f<<endl;
 }
 

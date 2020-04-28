@@ -15,5 +15,7 @@ namespace util {
     NdArray<float> StringToVec(const string& input);
 
     string MatToString(const NdArray<double>& mat);
+
+    string VecToLine(const NdArray<double>& vec);
 }
 #endif //FINALPROJECT_UTIL_H

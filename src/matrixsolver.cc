@@ -5,6 +5,7 @@
 
 namespace matrixsolver {
 
+    //Note that there're redundent memory usage
     string Rref(const string& input) {
         NdArray<double> mat;
         try {
@@ -25,7 +26,7 @@ namespace matrixsolver {
         string out;
         for (const auto& r:matrix) {
             out += "[";
-            for(const auto& c:r) {
+            for (const auto& c:r) {
                 out += to_string(c);
                 out += ", ";
             }
@@ -107,7 +108,7 @@ namespace matrixsolver {
         }
     }
 
-    //!TODO I don't have built in for this...Perhaps power iteration first.
+    //!TODO I don't have built in for this...Eigen Library?
     string Eigen(string input) {
         return "eigen";
     }
@@ -152,29 +153,33 @@ namespace matrixsolver {
         }
     }
 
-    //!TODO
-    string PowerIter(const string& input, const string& init_guess) {
+    pair<string, string> PowerIter(const string& input, const string& init_guess) {
         NdArray<double> mat;
         NdArray<double> vec;
         try {
             mat = util::StringToMat(input).astype<double>();
             vec = util::StringToVec(init_guess).astype<double>();
         } catch (exception e) {
-            return e.what();
+            return make_pair(e.what(), init_guess);
         }
 
         try {
-            auto tmp = nc::norm(vec, static_cast<Axis>(1));
-            NdArray<double> vec_normed = vec/tmp;
-            auto y = mat.dot(vec_normed);
-            return "Initial guess after 1 iteration is" + util::MatToString(y / y.norm());
+            // Normalize input to prevent overflow
+            // Broadcasting doesn't work too well between arrays, so
+            // I extracted the double contained in array for broadcasting
+            NdArray<double> vec_normed = vec / vec.norm()(0, 0);
+            NdArray<double> y = mat.dot(vec_normed);
+            NdArray<double> res = y / y.norm()(0, 0);
+            return make_pair("Initial guess after 1 iteration is\n" + util::MatToString(res),
+                             util::VecToLine(res));
         } catch (exception e) {
-            return e.what();
+            return make_pair(e.what(), init_guess);
         }
     }
 
     string LstSq(const string& input, const string& init_guess) {
         NdArray<float> A;
+        // Assume b is only one column
         NdArray<float> b;
 
         try {

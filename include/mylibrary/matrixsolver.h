@@ -24,7 +24,7 @@ namespace matrixsolver {
 
     string Inv(const string& input);
 
-    string PowerIter(const string& input, const string& init_guess);
+    pair<string, string> PowerIter(const string& input, const string& init_guess);
 
     string LstSq(const string& input, const string& init_guess);
 }  // namespace matrixsolver
