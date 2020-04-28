@@ -19,6 +19,9 @@
 -**4/25/20** Some more progress with backend
  - Finish SVD/Det
  - Change eigen to inverse
- - No native support for eigenvalue/vectors
-    - probably do a power iteration
- - Need to do Diagonalization(But this needs eigen)
+ - No native library support for eigenvalue/vectors
+    - ~~probably do a power iteration~~ in progress
+ - Maybe do Diagonalization(But this needs eigen)
+
+-**4/27/20** Finish LstSq
+ - Refactor some functions into util.h

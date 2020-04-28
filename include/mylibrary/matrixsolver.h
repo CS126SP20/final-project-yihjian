@@ -8,10 +8,6 @@
 using namespace std;
 using namespace nc;
 namespace matrixsolver {
-    NdArray<float> StringToMat(const string& input);
-
-    string MatToString(const NdArray<double>& mat);
-
     string Rref(const string& input);
 
     int RrefHelper(vector<vector<double>>& mat);
@@ -27,6 +23,10 @@ namespace matrixsolver {
     string SVD(const string& input);
 
     string Inv(const string& input);
+
+    string PowerIter(const string& input, const string& init_guess);
+
+    string LstSq(const string& input, const string& init_guess);
 }  // namespace matrixsolver
 
 

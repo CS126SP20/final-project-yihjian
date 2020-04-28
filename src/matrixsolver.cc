@@ -1,50 +1,14 @@
 // Copyright (c) 2020 [Yihong Jian]. All rights reserved.
 
 #include <mylibrary/matrixsolver.h>
-
+#include "mylibrary/util.h"
 
 namespace matrixsolver {
-    NdArray<float> StringToMat(const string& input) {
-        istringstream iss_row(input);
-        size_t row_count = 0;
-        string row;
-        vector<float_t> mat;
-        // Every row is sperated by "\n", so getline would return every row
-        while (getline(iss_row, row)) {
-            // Use ',' as token to split every column
-            row_count++;
-            istringstream iss_col(row);
-            string col;
-            while (getline(iss_col, col, ',')) {
-                // Stackoverflow method of "trim"
-                col.erase(col.begin(),
-                          find_if(col.begin(),
-                                  col.end(),
-                                  not1(ptr_fun<int, int>(std::isspace))));
-                col.erase(find_if(col.rbegin(),
-                                  col.rend(),
-                                  not1(ptr_fun<int, int>(std::isspace))).base(),
-                          col.end());
-                // Convert to float and append to vec.
-                mat.push_back(stof(col));
-            }
-        }
-        // If missing an entry, throw out an error
-        if (mat.size() % row_count != 0)
-            throw std::exception("Matrix not in form n*m");
-        return NdArray<float>{mat}.reshape(row_count, mat.size() / row_count);
-    }
-
-    string MatToString(const NdArray<double>& mat) {
-        ostringstream oss;
-        oss << mat;
-        return oss.str();
-    }
 
     string Rref(const string& input) {
         NdArray<double> mat;
         try {
-            mat = StringToMat(input).astype<double>();
+            mat = util::StringToMat(input).astype<double>();
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
@@ -106,43 +70,10 @@ namespace matrixsolver {
         return row;
     }
 
-//    int RrefHelper(NdArray<double>& mat) {
-//        int num_row = mat.shape().rows;
-//        int num_col = mat.shape().cols;
-//        int row = 0;
-//        for (int col = 0; col < num_col && row < num_row; col++) {
-//            int j = row;
-//            for (int i = row + 1; i < num_row; i++) {
-//                if (fabs(mat(i, col)) > fabs(mat(j, col)))
-//                    j = i;
-//            }
-//
-//            if (fabs(mat(j, col)) < 1e-10)
-//                continue;
-//
-//            auto tmp = mat.row(j);
-//            mat.row(j) = mat.row(row);
-//            mat.row(row) = tmp;
-//            cout<<mat<<endl;
-//
-//            double norm_factor = 1.0 / mat(row, col);
-//            mat.row(row) * norm_factor;
-//            cout<<mat<<endl;
-//            for (int i = 0; i < num_row; i++)
-//                if (i != row) {
-//                    double col_factor = mat(i, col);
-//                    mat.row(i) - col_factor * mat(row, j);
-//                }
-//            cout<<mat<<endl;
-//            row++;
-//        }
-//        return row;
-//    }
-
     string LUDecomp(const string& input) {
         NdArray<float> mat;
         try {
-            mat = StringToMat(input);
+            mat = util::StringToMat(input);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
@@ -152,8 +83,8 @@ namespace matrixsolver {
             // LUDecomp may encounter error such as rectangular matrix
             // So we just catch whatever and print it out.
             auto lu_res = linalg::lu_decomposition(mat);
-            string l = MatToString(get<0>(lu_res));
-            string u = MatToString(get<1>(lu_res));
+            string l = util::MatToString(get<0>(lu_res));
+            string u = util::MatToString(get<1>(lu_res));
             return "L is:\n" + l + "U is\n" + u;
         } catch (exception e) {
             return e.what();
@@ -163,7 +94,7 @@ namespace matrixsolver {
     string Det(const string& input) {
         NdArray<float> mat;
         try {
-            mat = StringToMat(input);
+            mat = util::StringToMat(input);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
@@ -184,7 +115,7 @@ namespace matrixsolver {
     string SVD(const string& input) {
         NdArray<float> mat;
         try {
-            mat = StringToMat(input);
+            mat = util::StringToMat(input);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
@@ -200,24 +131,64 @@ namespace matrixsolver {
             return e.what();
         }
 
-        return "U is:\n" + MatToString(u)
-               + "S is\n" + MatToString(s)
-               + "V-Transpose is\n" + MatToString(vt);
+        return "U is:\n" + util::MatToString(u)
+               + "S is\n" + util::MatToString(s)
+               + "V-Transpose is\n" + util::MatToString(vt);
     }
 
     string Inv(const string& input) {
         NdArray<float> mat;
         try {
-            mat = StringToMat(input);
+            mat = util::StringToMat(input);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
         }
 
         try {
-            return "Inverse is\n" + MatToString(linalg::inv(mat));
+            return "Inverse is\n" + util::MatToString(linalg::inv(mat));
         } catch (exception e) {
             return e.what();
         }
     }
+
+    //!TODO
+    string PowerIter(const string& input, const string& init_guess) {
+        NdArray<double> mat;
+        NdArray<double> vec;
+        try {
+            mat = util::StringToMat(input).astype<double>();
+            vec = util::StringToVec(init_guess).astype<double>();
+        } catch (exception e) {
+            return e.what();
+        }
+
+        try {
+            auto tmp = nc::norm(vec, static_cast<Axis>(1));
+            NdArray<double> vec_normed = vec/tmp;
+            auto y = mat.dot(vec_normed);
+            return "Initial guess after 1 iteration is" + util::MatToString(y / y.norm());
+        } catch (exception e) {
+            return e.what();
+        }
+    }
+
+    string LstSq(const string& input, const string& init_guess) {
+        NdArray<float> A;
+        NdArray<float> b;
+
+        try {
+            A = util::StringToMat(input);
+            b = util::StringToVec(init_guess);
+        } catch (exception e) {
+            return e.what();
+        }
+
+        try {
+            return util::MatToString(nc::linalg::lstsq(A, b));
+        } catch (exception e) {
+            return e.what();
+        }
+    }
+
 }  // namespace matrixsolver

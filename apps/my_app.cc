@@ -165,6 +165,6 @@ namespace myapp {
     }
 
     void MyApp::LstSq() {
-        solved_mat = "lstsq";
+        solved_mat = matrixsolver::LstSq(matrix, b);
     }
 }  // namespace myapp

@@ -6,6 +6,7 @@
 #include <cinder/Rand.h>
 
 #include <mylibrary/matrixsolver.h>
+#include "util.h"
 
 
 TEST_CASE("Random sanity test", "[random]") {
