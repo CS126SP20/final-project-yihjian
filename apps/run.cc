@@ -1,4 +1,4 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Yihong Jian]. All rights reserved.
 
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
@@ -18,7 +18,7 @@ const int kHeight = 1000;
 
 void SetUp(App::Settings* settings) {
   settings->setWindowSize(kWidth, kHeight);
-  settings->setTitle("The Ultimate Math Cheater");
+  settings->setTitle("The Ultimate LinAlg Cheater");
 }
 
 }  // namespace myapp

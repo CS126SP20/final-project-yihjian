@@ -1,4 +1,4 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Yihong Jian]. All rights reserved.
 
 #include "my_app.h"
 #include <NumCpp.hpp>
