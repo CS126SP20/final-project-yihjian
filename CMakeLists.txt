@@ -101,6 +101,21 @@ if(NOT numcpp_POPULATED)
 endif()
 
 target_include_directories(numcpp INTERFACE C:/Users/jiany/Downloads/boost_1_70_0/boost_1_70_0)
-add_executable(run1 apps/run.cc)
-target_link_libraries(run1 ${numcpp_LIBARARIES})
 target_link_libraries(mylibrary ${numcpp_LIBARARIES})
+
+FetchContent_Declare(
+        Eigen
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen
+)
+
+FetchContent_GetProperties(eigen)
+if(NOT eigen_POPULATED)
+    FetchContent_Populate(eigen)
+    # This is overkill since we only need a single file. Though it is a clean solution.
+    add_library(eigen INTERFACE)
+    target_include_directories(eigen INTERFACE ${eigen_SOURCE_DIR}/Eigen)
+endif()
+
+#target_include_directories(Eigen INTERFACE C:/Users/jiany/Downloads/boost_1_70_0/boost_1_70_0)
+target_link_libraries(mylibrary ${eigen_LIBARARIES})
+target_include_directories(mylibrary INTERFACE ${eigen_SOURCE_DIR})

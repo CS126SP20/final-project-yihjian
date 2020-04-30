@@ -32,7 +32,7 @@ namespace myapp {
 
         buttons = params::InterfaceGl::create(getWindow(), "Operations", ivec2(200, 430));
         buttons->addButton("Det", bind(&MyApp::Det, this));
-        buttons->addButton("Eigen(in development)", bind(&MyApp::Eigen, this));
+        buttons->addButton("Eigen", bind(&MyApp::Eigen, this));
         buttons->addButton("Inverse", bind(&MyApp::Inv, this));
         buttons->addButton("LU-Decomp", bind(&MyApp::LUDecomp, this));
         buttons->addButton("rref", bind(&MyApp::Rref, this));
@@ -157,7 +157,7 @@ namespace myapp {
     }
 
     void MyApp::Eigen() {
-        solved_mat = matrixsolver::Eigen(matrix);
+        solved_mat = matrixsolver::Eig(matrix);
     }
 
     void MyApp::PowerIteration() {

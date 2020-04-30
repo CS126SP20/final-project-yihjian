@@ -2,6 +2,11 @@
 
 #include <mylibrary/matrixsolver.h>
 #include "mylibrary/util.h"
+#include <Eigenvalues>
+
+// Taken from numcpp reference
+typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenIntMatrix;
+typedef Eigen::Map<EigenIntMatrix> EigenMatrixMap;
 
 namespace matrixsolver {
 
@@ -108,9 +113,32 @@ namespace matrixsolver {
         }
     }
 
-    //!TODO I don't have built in for this...Eigen Library?
-    string Eigen(string input) {
-        return "eigen";
+    string Eig(const string& input) {
+        NdArray<float> mat;
+        try {
+            mat = util::StringToMat(input);
+        } catch (exception e) {
+            // I can't catch "int e" for some reason.
+            return e.what();
+        }
+
+        // Map numcpp array to Eigen Matrix
+        auto eigen_mat = EigenMatrixMap(mat.data(), mat.numRows(), mat.numCols());
+
+        // Retrieve Eigen values
+        Eigen::EigenSolver<Eigen::MatrixXf> es(eigen_mat);
+        Eigen::VectorXf eigen_values = es.eigenvalues().real();
+        Eigen::MatrixXf eigen_vectors = es.eigenvectors().real();
+
+        // Map eigen matrix to string
+        ostringstream val;
+        val << eigen_values;
+        ostringstream vec;
+        vec << eigen_vectors;
+
+        return "CAUTION, complex eigenvalue caused UNDEFINED behavior\n"
+               "Eigenvalues are\n" + val.str() +
+               "\nEigenvectors(in columns) are\n" + vec.str();
     }
 
     string SVD(const string& input) {

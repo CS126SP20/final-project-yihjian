@@ -3,7 +3,9 @@
 #define FINALPROJECT_MYLIBRARY_MATRIXSOLVER_H_
 
 #include <string>
+#include <Dense>
 #include "NumCpp.hpp"
+
 
 using namespace std;
 using namespace nc;
@@ -18,7 +20,7 @@ namespace matrixsolver {
 
     string Det(const string& input);
 
-    string Eigen(string input);
+    string Eig(const string& input);
 
     string SVD(const string& input);
 
