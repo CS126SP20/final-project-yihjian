@@ -122,9 +122,10 @@ namespace matrixsolver {
             return e.what();
         }
 
+        if (mat.numCols() != mat.numRows())
+            return "Can't perform eigen calculation with non-square matrix";
         // Map numcpp array to Eigen Matrix
         auto eigen_mat = EigenMatrixMap(mat.data(), mat.numRows(), mat.numCols());
-
         // Retrieve Eigen values
         Eigen::EigenSolver<Eigen::MatrixXf> es(eigen_mat);
         Eigen::VectorXf eigen_values = es.eigenvalues().real();
