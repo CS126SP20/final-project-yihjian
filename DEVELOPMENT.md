@@ -29,4 +29,5 @@
  - Done Power Iteration
  
 -**4/30/20** Finish Eigenvalue/Eigenvector
- - Need to write README.md
+ - ~~Need to write README.md~~
+ - Need to rewrite determinant
