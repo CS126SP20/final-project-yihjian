@@ -19,7 +19,7 @@ namespace matrixsolver {
             // I can't catch "int e" for some reason.
             return e.what();
         }
-        size_t rank = RrefHelper(mat);
+        size_t rank = MatReducer(mat);
 
         // Strech out 2dvec to a string
         string out;
@@ -36,7 +36,7 @@ namespace matrixsolver {
     }
 
     // Took this from https://github.com/yicheng-w/acm-icpc-notebook/blob/master/general-algorithm/rref.cpp
-    int RrefHelper(vector<vector<double>>& mat) {
+    int MatReducer(vector<vector<double>>& mat) {
         int num_row = mat.size();
         int num_col = mat[0].size();
         int row = 0;
@@ -90,19 +90,46 @@ namespace matrixsolver {
     }
 
     string Det(const string& input) {
-        NdArray<double> mat;
+        vector<vector<double>> mat;
         try {
-            mat = util::StringToMat(input);
+            mat = util::StringTo2dVec(input);
         } catch (exception e) {
-            // I can't catch "int e" for some reason.
             return e.what();
         }
 
-        try {
-            return "Determinant is " + to_string(linalg::det(mat));
-        } catch (exception e) {
-            return e.what();
+        size_t n = mat.size();
+        if (n != mat[0].size())
+            return "Determinant Requires Square Matrix";
+
+        double det = 1.0;
+
+        for (int i = 0; i < n; ++i) {
+            double pivotElement = mat[i][i];
+            int pivotRow = i;
+            for (int row = i + 1; row < n; ++row) {
+                if (std::abs(mat[row][i]) > std::abs(pivotElement)) {
+                    pivotElement = mat[row][i];
+                    pivotRow = row;
+                }
+            }
+            if (pivotElement == 0.0) {
+                det = 0.0;
+                break;
+            }
+            if (pivotRow != i) {
+                mat[i].swap(mat[pivotRow]);
+                det *= -1.0;
+            }
+            det *= pivotElement;
+
+            for (int row = i + 1; row < n; ++row) {
+                for (int col = i + 1; col < n; ++col) {
+                    mat[row][col] -= mat[row][i] * mat[i][col] / pivotElement;
+                }
+            }
         }
+
+        return "Determinant is " + to_string(det);
     }
 
     string Eig(const string& input) {

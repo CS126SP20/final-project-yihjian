@@ -12,9 +12,7 @@ using namespace nc;
 namespace matrixsolver {
     string Rref(const string& input);
 
-    int RrefHelper(vector<vector<double>>& mat);
-
-    //int RrefHelper(NdArray<double>& mat);
+    int MatReducer(vector<vector<double>>& mat);
 
     string LUDecomp(const string& input);
 

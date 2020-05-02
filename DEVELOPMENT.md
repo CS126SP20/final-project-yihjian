@@ -14,7 +14,7 @@
  - Update front end display of results.
  
 -**4/24/20** Finish LU-decomp
- - ~~Need to do Rref~~ -> Could improve runtime/memory
+ - ~~Need to do Rref~~ -> ~~Could improve runtime/memory~~
  
 -**4/25/20** Some more progress with backend
  - Finish SVD/Det
@@ -30,4 +30,6 @@
  
 -**4/30/20** Finish Eigenvalue/Eigenvector
  - ~~Need to write README.md~~
- - Need to rewrite determinant
+ - ~~Need to rewrite determinant~~
+ 
+-**5/2/20** Clean up redundent string parsers
