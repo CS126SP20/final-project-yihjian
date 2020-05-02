@@ -5,31 +5,25 @@
 #include <Eigenvalues>
 
 // Taken from numcpp reference
-typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenIntMatrix;
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> EigenIntMatrix;
 typedef Eigen::Map<EigenIntMatrix> EigenMatrixMap;
 
 namespace matrixsolver {
 
-    //Note that there're redundent memory usage
     string Rref(const string& input) {
-        NdArray<double> mat;
+        // Convert to 2d array and solve
+        vector<vector<double>> mat;
         try {
-            mat = util::StringToMat(input).astype<double>();
+            mat = util::StringTo2dVec(input);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
         }
+        size_t rank = RrefHelper(mat);
 
-        // Convert NdArray to 2DVec to calculate rref
-        size_t row = mat.shape().rows;
-        vector<vector<double>> matrix(row);
-        for (int i = 0; i < row; i++)
-            matrix[i] = mat.row(i).toStlVector();
-
-        size_t rank = RrefHelper(matrix);
-        // Strech out 2dvec
+        // Strech out 2dvec to a string
         string out;
-        for (const auto& r:matrix) {
+        for (const auto& r:mat) {
             out += "[";
             for (const auto& c:r) {
                 out += to_string(c);
@@ -42,8 +36,6 @@ namespace matrixsolver {
     }
 
     // Took this from https://github.com/yicheng-w/acm-icpc-notebook/blob/master/general-algorithm/rref.cpp
-    // Should have don't it using cn::NdArray, but I could not update mat in
-    // that form.
     int RrefHelper(vector<vector<double>>& mat) {
         int num_row = mat.size();
         int num_col = mat[0].size();
@@ -77,7 +69,7 @@ namespace matrixsolver {
     }
 
     string LUDecomp(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
             mat = util::StringToMat(input);
         } catch (exception e) {
@@ -98,7 +90,7 @@ namespace matrixsolver {
     }
 
     string Det(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
             mat = util::StringToMat(input);
         } catch (exception e) {
@@ -114,7 +106,7 @@ namespace matrixsolver {
     }
 
     string Eig(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
             mat = util::StringToMat(input);
         } catch (exception e) {
@@ -127,9 +119,9 @@ namespace matrixsolver {
         // Map numcpp array to Eigen Matrix
         auto eigen_mat = EigenMatrixMap(mat.data(), mat.numRows(), mat.numCols());
         // Retrieve Eigen values
-        Eigen::EigenSolver<Eigen::MatrixXf> es(eigen_mat);
-        Eigen::VectorXf eigen_values = es.eigenvalues().real();
-        Eigen::MatrixXf eigen_vectors = es.eigenvectors().real();
+        Eigen::EigenSolver<Eigen::MatrixXd> es(eigen_mat);
+        Eigen::VectorXd eigen_values = es.eigenvalues().real();
+        Eigen::MatrixXd eigen_vectors = es.eigenvectors().real();
 
         // Map eigen matrix to string
         ostringstream val;
@@ -143,7 +135,7 @@ namespace matrixsolver {
     }
 
     string SVD(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
             mat = util::StringToMat(input);
         } catch (exception e) {
@@ -155,7 +147,7 @@ namespace matrixsolver {
         nc::NdArray<double> s;
         nc::NdArray<double> vt;
         try {
-            linalg::svd(mat.astype<double>(), u, s, vt);
+            linalg::svd(mat, u, s, vt);
         } catch (exception e) {
             // I can't catch "int e" for some reason.
             return e.what();
@@ -167,7 +159,7 @@ namespace matrixsolver {
     }
 
     string Inv(const string& input) {
-        NdArray<float> mat;
+        NdArray<double> mat;
         try {
             mat = util::StringToMat(input);
         } catch (exception e) {
@@ -207,9 +199,9 @@ namespace matrixsolver {
     }
 
     string LstSq(const string& input, const string& init_guess) {
-        NdArray<float> A;
+        NdArray<double> A;
         // Assume b is only one column
-        NdArray<float> b;
+        NdArray<double> b;
 
         try {
             A = util::StringToMat(input);
@@ -217,6 +209,9 @@ namespace matrixsolver {
         } catch (exception e) {
             return e.what();
         }
+
+        if (A.numRows() != b.numRows())
+            return "For Ax = b, rows of A and b does not match";
 
         try {
             return util::MatToString(nc::linalg::lstsq(A, b));

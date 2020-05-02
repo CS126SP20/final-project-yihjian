@@ -10,9 +10,11 @@
 using namespace std;
 using namespace nc;
 namespace util {
-    NdArray<float> StringToMat(const string& input, bool vec = false);
+    NdArray<double> StringToMat(const string& input, bool vec = false);
 
-    //vector<vector<double>> StringTo2dVec(const string& input);
+    vector<vector<double>> StringTo2dVec(const string& input);
+
+    pair<vector<double>, int> StringToMatHelper(const string& input);
 
     string MatToString(const NdArray<double>& mat);
 
