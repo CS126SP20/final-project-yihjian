@@ -39,7 +39,5 @@ TEST_CASE("rref") {
         a[i] = vector<double>(A[i], A[i] + 4);
     int rank = matrixsolver::RrefHelper(a);
     REQUIRE(rank == 3);
-    cout<<util::StringToVec("-3, 4").norm()(0,0)<<endl;
-    cout<<util::StringToVec("-3,4") / 5.0f<<endl;
 }
 

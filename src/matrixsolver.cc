@@ -187,7 +187,7 @@ namespace matrixsolver {
         NdArray<double> vec;
         try {
             mat = util::StringToMat(input).astype<double>();
-            vec = util::StringToVec(init_guess).astype<double>();
+            vec = util::StringToMat(init_guess, true).astype<double>();
         } catch (exception e) {
             return make_pair(e.what(), init_guess);
         }
@@ -213,7 +213,7 @@ namespace matrixsolver {
 
         try {
             A = util::StringToMat(input);
-            b = util::StringToVec(init_guess);
+            b = util::StringToMat(init_guess, true);
         } catch (exception e) {
             return e.what();
         }
